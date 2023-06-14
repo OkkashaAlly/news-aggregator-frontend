@@ -7,7 +7,7 @@ export interface SearchState {
     | {
         status: string;
         totalResults: number;
-        articles: [];
+        articles: any[];
       }
     | undefined;
   loading: boolean;
