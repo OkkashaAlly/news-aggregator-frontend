@@ -1,8 +1,9 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Types ==============================================
 export interface SearchState {
+  query: string;
   search:
     | {
         status: string;
@@ -16,6 +17,7 @@ export interface SearchState {
 
 // Initial State ==============================================
 const initialState: SearchState = {
+  query: "headlines",
   search: undefined,
   loading: false,
   error: undefined,
@@ -25,11 +27,9 @@ export const searchNews = createAsyncThunk(
   "search/searchNews",
   async (search: string) => {
     const response = await axios.get(
-      `https://newsapi.org/v2/everything?q=${search}&apiKey=${process.env.NEXT_PUBLIC_NEWS_API_KEY}`
+      `${process.env.NEXT_PUBLIC_NEWS_API_URL}everything?q=${search}&apiKey=${process.env.NEXT_PUBLIC_NEWS_API_KEY}`
     );
 
-    console.log(response);
-    
     return response.data;
   }
 );
@@ -38,7 +38,11 @@ export const searchNews = createAsyncThunk(
 export const searchSlice = createSlice({
   name: "search",
   initialState,
-  reducers: {},
+  reducers: {
+    setQuery: (state, action) => {
+      state.query = action.payload;
+    },
+  },
   extraReducers: builder => {
     builder.addCase(searchNews.pending, state => {
       state.loading = true;
@@ -56,6 +60,9 @@ export const searchSlice = createSlice({
     });
   },
 });
+
+// Actions ==============================================
+export const { setQuery } = searchSlice.actions;
 
 // Reducer ==============================================
 export default searchSlice.reducer;
