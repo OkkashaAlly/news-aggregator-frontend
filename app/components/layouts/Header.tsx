@@ -7,8 +7,8 @@ import { SearchBar } from "..";
 export default function Header() {
   // RETURN ==========================================
   return (
-    <header className="border-b border-b-gray-300 shadow-sm bg-white px-16 py-3">
-      <div className="container w-[78%] flex items-center justify-between">
+    <header className="border-b border-b-gray-300 shadow-sm bg-white py-3">
+      <div className="container w-[75%] flex items-center justify-between">
         <div className="flex gap-4 items-center">
           {/* logo */}
           <h1 className="text-2xl font-bold">News App</h1>
