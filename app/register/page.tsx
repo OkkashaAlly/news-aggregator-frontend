@@ -18,9 +18,12 @@ export default function Register() {
   // RETURN ==========================================
   return (
     <main className="container w-[75%] py-4 flex justify-center">
-      <div className="w-[60%]">
-        <h1 className="text-3xl font-bold mb-4">Create account</h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="w-[40%] ">
+        <h1 className="text-3xl font-bold mb-4 text-center">Create account</h1>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-white p-6 rounded-md"
+        >
           {/* name */}
           <div className="mb-4">
             <label htmlFor="name" className="block text-gray-600 mb-2">
@@ -66,26 +69,9 @@ export default function Register() {
               <span className="text-red-500">Password is required</span>
             )}
           </div>
-          {/* confirm password */}
-          <div className="mb-4">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-gray-600 mb-2"
-            >
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              className="w-full border border-gray-300 rounded-md py-1.5 px-2.5 outline-none"
-              {...register("confirmPassword", { required: true })}
-            />
-            {errors.confirmPassword && (
-              <span className="text-red-500">Confirm Password is required</span>
-            )}
-          </div>
+
           {/* submit */}
-          <div className="mb-4">
+          <div className="mb-2 pt-4">
             <button
               type="submit"
               className="w-full bg-blue-500 text-white py-2 px-4 rounded-md"
