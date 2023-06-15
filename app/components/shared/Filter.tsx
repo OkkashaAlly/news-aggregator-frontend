@@ -11,6 +11,7 @@ import {
   removeLanguage,
   removeSortBy,
   removeSource,
+  savePreferences,
 } from "@/store/features/preference/preferenceSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Multiselect from "multiselect-react-dropdown";
@@ -183,20 +184,27 @@ const Modal = ({
   const { query } = useAppSelector(state => state.news);
 
   // state
-  const { sources, categories, languages, countries, sortBy } = useAppSelector(
-    state => state.preference
-  );
+  const {
+    sources,
+    categories,
+    languages,
+    countries,
+    sortBy,
+    loading,
+    error,
+    saved,
+  } = useAppSelector(state => state.preference);
 
   // handle submit
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     const preference = {
-      sources: sources.map(source => source.key),
-      categories: categories.map(category => category.key),
-      languages: languages.map(language => language.key),
-      countries: countries.map(country => country.key),
-      sortBy: sortBy.map(sort => sort.key),
+      sources: JSON.stringify(sources.map(source => source.key)),
+      categories: JSON.stringify(categories.map(category => category.key)),
+      languages: JSON.stringify(languages.map(language => language.key)),
+      countries: JSON.stringify(countries.map(country => country.key)),
+      sortBy: JSON.stringify(sortBy.map(sort => sort.key)),
     };
 
     let filter = "";
@@ -224,7 +232,9 @@ const Modal = ({
 
     dispatch(filterNews({ query, filter }));
 
-    setShowModal(false);
+    dispatch(savePreferences(preference));
+
+    if (saved) setShowModal(false);
   };
 
   // RETURN ==========================================
@@ -311,7 +321,7 @@ const Modal = ({
             className="border border-blue-500 text-blue-500 px-4 py-2 rounded-md"
             onClick={handleSubmit}
           >
-            Apply
+            {loading ? "Loading..." : error ? error : "Apply"}
           </button>
         </div>
       </form>
