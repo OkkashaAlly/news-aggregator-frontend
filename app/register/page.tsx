@@ -45,7 +45,7 @@ export default function Register() {
   // RETURN ==========================================
   return (
     <main className="container w-[90%] md:w-[75%] py-4 flex justify-center">
-      <div className="w-[40%] mt-8">
+      <div className="w-[90%] md:w-[40%] mt-8">
         <h1 className="text-3xl font-bold mb-4 text-center">Create account</h1>
         {loading ? (
           <h1>Loading...</h1>
