@@ -30,7 +30,7 @@ const NewsSection = () => {
 
   return (
     <section className="text-gray-600 mt-4">
-      <div className="container mx-auto"></div>
+      <div className="container mx-auto">
         <div className="flex flex-wrap -m-4">
           {loading ? (
             <h1 className="p-4">Loading...</h1>
