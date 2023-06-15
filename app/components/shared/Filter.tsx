@@ -6,6 +6,7 @@ import {
   addLanguage,
   addSortBy,
   addSource,
+  getPreferences,
   removeCategory,
   removeCountry,
   removeLanguage,
@@ -15,7 +16,7 @@ import {
 } from "@/store/features/preference/preferenceSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Multiselect from "multiselect-react-dropdown";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
 import { data } from "./dummyFilter";
 
@@ -26,113 +27,18 @@ import { data } from "./dummyFilter";
 // =====================================================
 const Filter = () => {
   const [showModal, setShowModal] = useState(false);
-  // news sources (domain)
-  const sourcesList = [
-    {
-      title: "BBC News UK",
-      key: "bbc.co.uk",
-    },
-    {
-      title: "TechCrunch",
-      key: "techcrunch.com",
-    },
-  ];
 
-  const categoriesList = [
-    {
-      title: "business",
-      key: "business",
-    },
-    {
-      title: "entertainment",
-      key: "entertainment",
-    },
-    {
-      title: "health",
-      key: "health",
-    },
-    {
-      title: "science",
-      key: "science",
-    },
-    {
-      title: "sports",
-      key: "sports",
-    },
-    {
-      title: "technology",
-      key: "technology",
-    },
-  ];
+  const { loggedIn } = useAppSelector(state => state.auth);
+  const dispatch = useAppDispatch();
 
-  const languagesList = [
-    {
-      title: "arabic",
-      key: "ar",
+  // get saved preferences on page load
+  useEffect(
+    () => {
+      if (loggedIn) dispatch(getPreferences());
     },
-    {
-      title: "german",
-      key: "de",
-    },
-    {
-      title: "english",
-      key: "en",
-    },
-    {
-      title: "spanish",
-      key: "es",
-    },
-    {
-      title: "chinese",
-      key: "zh",
-    },
-  ];
-
-  const countriesList = [
-    {
-      title: "egypt",
-      key: "eg",
-    },
-    {
-      title: "germany",
-      key: "de",
-    },
-    {
-      title: "united kingdom",
-      key: "gb",
-    },
-    {
-      title: "united states",
-      key: "us",
-    },
-    {
-      title: "france",
-      key: "fr",
-    },
-    {
-      title: "russia",
-      key: "ru",
-    },
-    {
-      title: "china",
-      key: "cn",
-    },
-  ];
-
-  const sortByList = [
-    {
-      title: "relevancy",
-      key: "relevancy",
-    },
-    {
-      title: "popularity",
-      key: "popularity",
-    },
-    {
-      title: "latest",
-      key: "publishedAt",
-    },
-  ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [loggedIn]
+  );
 
   // handle filter
   const handleFilters = () => {
@@ -147,16 +53,7 @@ const Filter = () => {
         <span>Filters & Preferences</span>
       </button>
       {/* modal */}
-      {showModal && (
-        <Modal
-          setShowModal={setShowModal}
-          sourcesList={sourcesList}
-          categoriesList={categoriesList}
-          languagesList={languagesList}
-          countriesList={countriesList}
-          sortByList={sortByList}
-        />
-      )}
+      {showModal && <Modal setShowModal={setShowModal} />}
     </div>
   );
 };
@@ -164,21 +61,7 @@ const Filter = () => {
 // EXTENDED COMPONENT =================================
 type Filter = { title: string; key: string };
 
-const Modal = ({
-  setShowModal,
-  sourcesList,
-  categoriesList,
-  languagesList,
-  countriesList,
-  sortByList,
-}: {
-  setShowModal: (arg0: boolean) => void;
-  sourcesList: Filter[];
-  categoriesList: Filter[];
-  languagesList: Filter[];
-  countriesList: Filter[];
-  sortByList: Filter[];
-}) => {
+const Modal = ({ setShowModal }: { setShowModal: (arg0: boolean) => void }) => {
   // redux
   const dispatch = useAppDispatch();
   const { query } = useAppSelector(state => state.news);
@@ -200,11 +83,11 @@ const Modal = ({
     e.preventDefault();
 
     const preference = {
-      sources: JSON.stringify(sources.map(source => source.key)),
-      categories: JSON.stringify(categories.map(category => category.key)),
-      languages: JSON.stringify(languages.map(language => language.key)),
-      countries: JSON.stringify(countries.map(country => country.key)),
-      sortBy: JSON.stringify(sortBy.map(sort => sort.key)),
+      sources: JSON.stringify(sources),
+      categories: JSON.stringify(categories),
+      languages: JSON.stringify(languages),
+      countries: JSON.stringify(countries),
+      sortBy: JSON.stringify(sortBy),
     };
 
     let filter = "";

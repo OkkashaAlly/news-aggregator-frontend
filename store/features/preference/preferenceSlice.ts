@@ -25,8 +25,8 @@ const initialState: PreferenceState = {
   sortBy: [],
   loading: false,
   error: undefined,
-  saved: false,
   preferences: undefined,
+  saved: false,
 };
 
 // SAVE PREFERENCES
@@ -35,7 +35,7 @@ export const savePreferences = createAsyncThunk(
   async (preferences: any) => {
     try {
       console.log("preferences: ", preferences);
-      
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_API_URL}api/preference`,
         { ...preferences },
@@ -50,6 +50,34 @@ export const savePreferences = createAsyncThunk(
     }
   }
 );
+
+// GET PREFERENCES
+export const getPreferences = createAsyncThunk(
+  "preference/getPreferences",
+  async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}api/preference`,
+        { withCredentials: true }
+      );
+
+      console.log("response: ", response);
+      return response.data;
+    } catch (error: any) {
+      console.log(error.response.data.message);
+      throw new Error(error.response.data.message);
+    }
+  }
+);
+
+// FILL THE PREFERENCES FROM API RESPONSE
+const fillPreferences = (state: any, preferences: any) => {
+  state.sources = JSON.parse(preferences.sources);
+  state.categories = JSON.parse(preferences.categories);
+  state.countries = JSON.parse(preferences.countries);
+  state.languages = JSON.parse(preferences.languages);
+  state.sortBy = JSON.parse(preferences.sortBy);
+};
 
 // Slice ==============================================
 const preferenceSlice = createSlice({
@@ -88,6 +116,7 @@ const preferenceSlice = createSlice({
     },
   },
   extraReducers: builder => {
+    // SAVE PREFERENCES
     builder.addCase(savePreferences.pending, (state, action) => {
       state.loading = true;
       state.error = undefined;
@@ -99,6 +128,21 @@ const preferenceSlice = createSlice({
       state.error = undefined;
     });
     builder.addCase(savePreferences.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+
+    // GET PREFERENCES
+    builder.addCase(getPreferences.pending, (state, action) => {
+      state.loading = true;
+      state.error = undefined;
+    });
+    builder.addCase(getPreferences.fulfilled, (state, action) => {
+      state.loading = false;
+      fillPreferences(state, action.payload);
+      state.error = undefined;
+    });
+    builder.addCase(getPreferences.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
