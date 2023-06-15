@@ -1,9 +1,24 @@
 "use client";
 import { filterNews } from "@/store/features/news/searchSlice";
+import {
+  addCategory,
+  addCountry,
+  addLanguage,
+  addSortBy,
+  addSource,
+  removeCategory,
+  removeCountry,
+  removeLanguage,
+  removeSortBy,
+  removeSource,
+} from "@/store/features/preference/preferenceSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Multiselect from "multiselect-react-dropdown";
 import { FormEvent, useState } from "react";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
+import { data } from "./dummyFilter";
+
+// import {data} from './dummyFilters.ts'
 
 // =====================================================
 // FILTERS  COMPONENT ==================================
@@ -14,115 +29,107 @@ const Filter = () => {
   const sourcesList = [
     {
       title: "BBC News UK",
-      link: "bbc.co.uk",
+      key: "bbc.co.uk",
     },
     {
       title: "TechCrunch",
-      link: "techcrunch.com",
+      key: "techcrunch.com",
     },
   ];
 
   const categoriesList = [
     {
       title: "business",
-      link: "business",
+      key: "business",
     },
     {
       title: "entertainment",
-      link: "entertainment",
+      key: "entertainment",
     },
     {
       title: "health",
-      link: "health",
+      key: "health",
     },
     {
       title: "science",
-      link: "science",
+      key: "science",
     },
     {
       title: "sports",
-      link: "sports",
+      key: "sports",
     },
     {
       title: "technology",
-      link: "technology",
+      key: "technology",
     },
   ];
 
   const languagesList = [
     {
       title: "arabic",
-      link: "ar",
+      key: "ar",
     },
     {
       title: "german",
-      link: "de",
+      key: "de",
     },
     {
       title: "english",
-      link: "en",
+      key: "en",
     },
     {
       title: "spanish",
-      link: "es",
-    },
-    {
-      title: "french",
-      link: "fr",
-    },
-    {
-      title: "russian",
-      link: "ru",
+      key: "es",
     },
     {
       title: "chinese",
-      link: "zh",
+      key: "zh",
     },
   ];
 
   const countriesList = [
     {
       title: "egypt",
-      link: "eg",
+      key: "eg",
     },
     {
       title: "germany",
-      link: "de",
+      key: "de",
     },
     {
       title: "united kingdom",
-      link: "gb",
+      key: "gb",
     },
     {
       title: "united states",
-      link: "us",
+      key: "us",
     },
     {
       title: "france",
-      link: "fr",
+      key: "fr",
     },
     {
       title: "russia",
-      link: "ru",
+      key: "ru",
     },
     {
       title: "china",
-      link: "cn",
+      key: "cn",
     },
   ];
 
   const sortByList = [
     {
       title: "relevancy",
-      link: "relevancy",
+      key: "relevancy",
     },
     {
       title: "popularity",
-      link: "popularity",
+      key: "popularity",
     },
     {
       title: "latest",
-      link: "publishedAt",
+      key: "publishedAt",
     },
   ];
 
@@ -154,7 +161,7 @@ const Filter = () => {
 };
 
 // EXTENDED COMPONENT =================================
-type Filter = { title: string; link: string };
+type Filter = { title: string; key: string };
 
 const Modal = ({
   setShowModal,
@@ -176,43 +183,41 @@ const Modal = ({
   const { query } = useAppSelector(state => state.news);
 
   // state
-  const [sources, setSources] = useState<Filter[]>([]);
-  const [categories, setCategories] = useState<Filter[]>([]);
-  const [languages, setLanguages] = useState<Filter[]>([]);
-  const [countries, setCountries] = useState<Filter[]>([]);
-  const [sortBy, setSortBy] = useState<Filter[]>([]);
+  const { sources, categories, languages, countries, sortBy } = useAppSelector(
+    state => state.preference
+  );
 
   // handle submit
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     const preference = {
-      sources: sources.map(source => source.link),
-      categories: categories.map(category => category.link),
-      languages: languages.map(language => language.link),
-      countries: countries.map(country => country.link),
-      sortBy: sortBy.map(sort => sort.link),
+      sources: sources.map(source => source.key),
+      categories: categories.map(category => category.key),
+      languages: languages.map(language => language.key),
+      countries: countries.map(country => country.key),
+      sortBy: sortBy.map(sort => sort.key),
     };
 
     let filter = "";
     if (sources.length > 0) {
-      filter = `sources=${sources.map(source => source.link).join(",")}&`;
+      filter = `sources=${sources.map(source => source.key).join(",")}&`;
     }
     if (categories.length > 0) {
       filter += `category=${categories
-        .map(category => category.link)
+        .map(category => category.key)
         .join(",")}&`;
     }
     if (languages.length > 0) {
       filter += `language=${languages
-        .map(language => language.link)
+        .map(language => language.key)
         .join(",")}&`;
     }
     if (countries.length > 0) {
-      filter += `country=${countries.map(country => country.link).join(",")}&`;
+      filter += `country=${countries.map(country => country.key).join(",")}&`;
     }
     if (sortBy.length > 0) {
-      filter += `sortBy=${sortBy.map(sort => sort.link).join(",")}&`;
+      filter += `sortBy=${sortBy.map(sort => sort.key).join(",")}&`;
     }
 
     filter = filter.slice(0, -1);
@@ -232,10 +237,10 @@ const Modal = ({
           <div className="flex gap-6">
             <Multiselect
               displayValue="title"
-              onSelect={e => {
-                setSources(e);
-              }}
-              options={sourcesList}
+              onSelect={e => dispatch(addSource(e))}
+              onRemove={e => dispatch(removeSource(e))}
+              options={data.sources}
+              selectedValues={sources}
             />
           </div>
         </div>
@@ -245,10 +250,10 @@ const Modal = ({
           <div className="flex gap-6">
             <Multiselect
               displayValue="title"
-              onSelect={e => {
-                setCategories(e);
-              }}
-              options={categoriesList}
+              onSelect={e => dispatch(addCategory(e))}
+              onRemove={e => dispatch(removeCategory(e))}
+              options={data.categories}
+              selectedValues={categories}
             />
           </div>
         </div>
@@ -258,10 +263,10 @@ const Modal = ({
           <div className="flex gap-6">
             <Multiselect
               displayValue="title"
-              onSelect={e => {
-                setLanguages(e);
-              }}
-              options={languagesList}
+              onSelect={e => dispatch(addLanguage(e))}
+              onRemove={e => dispatch(removeLanguage(e))}
+              options={data.languages}
+              selectedValues={languages}
             />
           </div>
         </div>
@@ -271,10 +276,10 @@ const Modal = ({
           <div className="flex gap-6">
             <Multiselect
               displayValue="title"
-              onSelect={e => {
-                setCountries(e);
-              }}
-              options={countriesList}
+              onSelect={e => dispatch(addCountry(e))}
+              onRemove={e => dispatch(removeCountry(e))}
+              options={data.countries}
+              selectedValues={countries}
             />
           </div>
         </div>
@@ -284,10 +289,10 @@ const Modal = ({
           <div className="flex gap-6">
             <Multiselect
               displayValue="title"
-              onSelect={e => {
-                setSortBy(e);
-              }}
-              options={sortByList}
+              onSelect={e => dispatch(addSortBy(e))}
+              onRemove={e => dispatch(removeSortBy(e))}
+              options={data.sortBy}
+              selectedValues={sortBy}
             />
           </div>
         </div>
