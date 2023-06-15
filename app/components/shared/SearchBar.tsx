@@ -1,5 +1,5 @@
 "use client";
-import { searchNews, setQuery } from "@/store/features/search/searchSlice";
+import { searchNews, setQuery } from "@/store/features/news/searchSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { FormEvent, useEffect } from "react";
 import { HiMagnifyingGlass } from "react-icons/hi2";
@@ -11,7 +11,7 @@ const SearchBar = () => {
   // redux
   const dispatch = useAppDispatch();
 
-  const { query } = useAppSelector(state => state.search);
+  const { query } = useAppSelector(state => state.news);
 
   // load initial news on page load
   useEffect(() => {

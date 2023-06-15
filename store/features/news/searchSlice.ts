@@ -4,7 +4,7 @@ import axios from "axios";
 // Types ==============================================
 export interface SearchState {
   query: string;
-  search:
+  news:
     | {
         status: string;
         totalResults: number;
@@ -18,14 +18,14 @@ export interface SearchState {
 // Initial State ==============================================
 const initialState: SearchState = {
   query: "headlines",
-  search: undefined,
+  news: undefined,
   loading: false,
   error: undefined,
 };
 
 // GET NEWS
 export const searchNews = createAsyncThunk(
-  "search/searchNews",
+  "news/searchNews",
   async (search: string) => {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_NEWS_API_URL}everything?q=${search}&apiKey=${process.env.NEXT_PUBLIC_NEWS_API_KEY}`
@@ -37,7 +37,7 @@ export const searchNews = createAsyncThunk(
 
 // FILTER NEWS
 export const filterNews = createAsyncThunk(
-  "search/filterNews",
+  "news/filterNews",
   async (search: { query: string; filter: string }) => {
     console.log("filters: ", search.filter);
 
@@ -51,7 +51,7 @@ export const filterNews = createAsyncThunk(
 
 // Slice ==============================================
 export const searchSlice = createSlice({
-  name: "search",
+  name: "news",
   initialState,
   reducers: {
     setQuery: (state, action) => {
@@ -63,33 +63,33 @@ export const searchSlice = createSlice({
     builder.addCase(searchNews.pending, state => {
       state.loading = true;
       state.error = undefined;
-      state.search = undefined;
+      state.news = undefined;
     });
     builder.addCase(searchNews.fulfilled, (state, action: any) => {
       state.loading = false;
       state.error = undefined;
-      state.search = action.payload;
+      state.news = action.payload;
     });
     builder.addCase(searchNews.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
-      state.search = undefined;
+      state.news = undefined;
     });
     // filter
     builder.addCase(filterNews.pending, state => {
       state.loading = true;
       state.error = undefined;
-      state.search = undefined;
+      state.news = undefined;
     });
     builder.addCase(filterNews.fulfilled, (state, action: any) => {
       state.loading = false;
       state.error = undefined;
-      state.search = action.payload;
+      state.news = action.payload;
     });
     builder.addCase(filterNews.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
-      state.search = undefined;
+      state.news = undefined;
     });
   },
 });

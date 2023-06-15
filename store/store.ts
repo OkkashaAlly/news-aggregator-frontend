@@ -1,14 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 // Reducers ============================
-import searchReducer from "./features/search/searchSlice";
-import registerUserReducer from "./features/user/registerUserSlice";
+import searchReducer from "./features/news/searchSlice";
+import authReducer from "./features/user/authSlice";
 
 // Store ============================
 const store = configureStore({
   reducer: {
-    search: searchReducer,
-    registerUser: registerUserReducer,
+    news: searchReducer,
+    auth: authReducer,
   },
 });
 

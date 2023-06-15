@@ -26,7 +26,7 @@ export default function Home() {
 // EXTENDED COMPONENTS =================================
 const NewsSection = () => {
   // redux
-  const { loading, error, search } = useAppSelector(state => state.search);
+  const { loading, error, news } = useAppSelector(state => state.news);
 
   return (
     <section className="text-gray-600 mt-4">
@@ -36,8 +36,8 @@ const NewsSection = () => {
             <h1>Loading...</h1>
           ) : error ? (
             <h1>{error}</h1>
-          ) : search && search.articles.length > 0 ? (
-            search.articles
+          ) : news && news.articles.length > 0 ? (
+            news.articles
               .slice(0, 6)
               .map(article => <NewsCard key={article.url} data={article} />)
           ) : (
@@ -73,6 +73,7 @@ const NewsCard = ({ data }: { data: any }) => {
             <a
               className="text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0"
               href={data.url}
+              target="_blank"
             >
               Learn More
               <svg

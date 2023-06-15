@@ -1,5 +1,5 @@
 "use client";
-import { filterNews } from "@/store/features/search/searchSlice";
+import { filterNews } from "@/store/features/news/searchSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useState } from "react";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
@@ -152,7 +152,7 @@ const Modal = ({
 }) => {
   // redux
   const dispatch = useAppDispatch();
-  const { query } = useAppSelector(state => state.search);
+  const { query } = useAppSelector(state => state.news);
 
   // state
   const [sources, setSources] = useState<string[]>([]);

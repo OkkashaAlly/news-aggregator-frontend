@@ -1,16 +1,15 @@
 "use client";
 import Link from "next/link";
+import { useAppSelector } from "@/store/hooks";
 
 // COMPONENTS =========================================
-import { useAppSelector } from "@/store/hooks";
 import { SearchBar } from "..";
 
 // ===================================================
 // HEADER LAYOUT COMPONENT (app/page.tsx) ============
 // ===================================================
-
 export default function Header() {
-  const { user } = useAppSelector(state => state.registerUser);
+  const { user } = useAppSelector(state => state.auth);
 
   // RETURN ==========================================
   return (
