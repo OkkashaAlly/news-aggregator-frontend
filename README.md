@@ -1,34 +1,37 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# News Aggregator
 
-First, run the development server:
+A news
+aggregator website that pulls articles from various sources and displays them in a clean,
+easy-to-read format
+
+
+## Installation
+
+1. Clone the project/repo (download the zip from green button above) or install GIT in your system then:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+  git clone https://github.com/OkkashaAlly/news-aggregator-frontend.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Navigate to the project directory
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+  cd news-aggregator-frontend
+``` 
+3. Install dependencies (yarn or npm)
+```
+ yarn install
+```
+```
+ npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+4. Copy the Enviroment variables from env.example and create a new .env file paste
+```
+ cp .env.example .env or copy .env.example .env
+```
 
-## Learn More
+5. Run ``` yarn dev ``` or ``` npm run dev ```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+6. Open url ``` http://localhost:3000/ ``` on your browser
