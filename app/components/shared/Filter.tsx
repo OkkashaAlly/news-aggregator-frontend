@@ -1,7 +1,8 @@
 "use client";
 import { filterNews } from "@/store/features/news/searchSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useState } from "react";
+import Multiselect from "multiselect-react-dropdown";
+import { FormEvent, useState } from "react";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
 
 // =====================================================
@@ -110,6 +111,21 @@ const Filter = () => {
     },
   ];
 
+  const sortByList = [
+    {
+      title: "relevancy",
+      link: "relevancy",
+    },
+    {
+      title: "popularity",
+      link: "popularity",
+    },
+    {
+      title: "latest",
+      link: "publishedAt",
+    },
+  ];
+
   // handle filter
   const handleFilters = () => {
     setShowModal(!showModal);
@@ -130,6 +146,7 @@ const Filter = () => {
           categoriesList={categoriesList}
           languagesList={languagesList}
           countriesList={countriesList}
+          sortByList={sortByList}
         />
       )}
     </div>
@@ -137,139 +154,149 @@ const Filter = () => {
 };
 
 // EXTENDED COMPONENT =================================
+type Filter = { title: string; link: string };
+
 const Modal = ({
   setShowModal,
   sourcesList,
   categoriesList,
   languagesList,
   countriesList,
+  sortByList,
 }: {
   setShowModal: (arg0: boolean) => void;
-  sourcesList: any[];
-  categoriesList: any[];
-  languagesList: any[];
-  countriesList: any[];
+  sourcesList: Filter[];
+  categoriesList: Filter[];
+  languagesList: Filter[];
+  countriesList: Filter[];
+  sortByList: Filter[];
 }) => {
   // redux
   const dispatch = useAppDispatch();
   const { query } = useAppSelector(state => state.news);
 
   // state
-  const [sources, setSources] = useState<string[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [languages, setLanguages] = useState<string[]>([]);
-  const [countries, setCountries] = useState<string[]>([]);
+  const [sources, setSources] = useState<Filter[]>([]);
+  const [categories, setCategories] = useState<Filter[]>([]);
+  const [languages, setLanguages] = useState<Filter[]>([]);
+  const [countries, setCountries] = useState<Filter[]>([]);
+  const [sortBy, setSortBy] = useState<Filter[]>([]);
+
+  // handle submit
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    const preference = {
+      sources: sources.map(source => source.link),
+      categories: categories.map(category => category.link),
+      languages: languages.map(language => language.link),
+      countries: countries.map(country => country.link),
+      sortBy: sortBy.map(sort => sort.link),
+    };
+
+    let filter = "";
+    if (sources.length > 0) {
+      filter = `sources=${sources.map(source => source.link).join(",")}&`;
+    }
+    if (categories.length > 0) {
+      filter += `category=${categories
+        .map(category => category.link)
+        .join(",")}&`;
+    }
+    if (languages.length > 0) {
+      filter += `language=${languages
+        .map(language => language.link)
+        .join(",")}&`;
+    }
+    if (countries.length > 0) {
+      filter += `country=${countries.map(country => country.link).join(",")}&`;
+    }
+    if (sortBy.length > 0) {
+      filter += `sortBy=${sortBy.map(sort => sort.link).join(",")}&`;
+    }
+
+    filter = filter.slice(0, -1);
+
+    dispatch(filterNews({ query, filter }));
+
+    setShowModal(false);
+  };
 
   // RETURN ==========================================
   return (
     <div className="absolute shadow-lg top-8 left-4">
-      <div className="bg-white space-y-4 p-6 rounded">
+      <form className="bg-white space-y-4 p-6 rounded">
         {/* sources */}
         <div className="">
           <h1>Sources</h1>
           <div className="flex gap-6">
-            {sourcesList.map(source => (
-              <div key={source.link} className="flex gap-2 items-center">
-                <input
-                  type="checkbox"
-                  value={source.link}
-                  onChange={e => {
-                    if (e.target.checked) {
-                      setSources([...sources, source.link]);
-                    } else {
-                      setSources(sources.filter(item => item !== source.link));
-                    }
-                  }}
-                />
-                <span>{source.title}</span>
-              </div>
-            ))}
+            <Multiselect
+              displayValue="title"
+              onSelect={e => {
+                setSources(e);
+              }}
+              options={sourcesList}
+            />
           </div>
         </div>
         {/* categories */}
         <div className="">
           <h1>Categories</h1>
           <div className="flex gap-6">
-            {categoriesList.map(category => (
-              <div key={category.link} className="flex gap-2 items-center">
-                <input
-                  type="checkbox"
-                  value={category.link}
-                  onChange={e => {
-                    if (e.target.checked) {
-                      setCategories([...categories, category.link]);
-                    } else {
-                      setCategories(
-                        categories.filter(item => item !== category.link)
-                      );
-                    }
-                  }}
-                />
-                <span className="capitalize">{category.title}</span>
-              </div>
-            ))}
+            <Multiselect
+              displayValue="title"
+              onSelect={e => {
+                setCategories(e);
+              }}
+              options={categoriesList}
+            />
           </div>
         </div>
         {/* languages */}
         <div className="">
           <h1>Languages</h1>
           <div className="flex gap-6">
-            {languagesList.map(language => (
-              <div key={language.link} className="flex gap-2 items-center">
-                <input
-                  type="checkbox"
-                  value={language.link}
-                  onChange={e => {
-                    if (e.target.checked) {
-                      setLanguages([...languages, language.link]);
-                    } else {
-                      setLanguages(
-                        languages.filter(item => item !== language.link)
-                      );
-                    }
-                  }}
-                />
-                <span className="capitalize">{language.title}</span>
-              </div>
-            ))}
+            <Multiselect
+              displayValue="title"
+              onSelect={e => {
+                setLanguages(e);
+              }}
+              options={languagesList}
+            />
           </div>
         </div>
         {/* countries */}
         <div className="">
           <h1>Countries</h1>
           <div className="flex gap-6">
-            {countriesList.map(country => (
-              <div key={country.link} className="flex gap-2 items-center">
-                <input
-                  type="checkbox"
-                  value={country.link}
-                  onChange={e => {
-                    if (e.target.checked) {
-                      setCountries([...countries, country.link]);
-                    } else {
-                      setCountries(
-                        countries.filter(item => item !== country.link)
-                      );
-                    }
-                  }}
-                />
-                <span className="capitalize">{country.title}</span>
-              </div>
-            ))}
+            <Multiselect
+              displayValue="title"
+              onSelect={e => {
+                setCountries(e);
+              }}
+              options={countriesList}
+            />
           </div>
         </div>
+        {/* sortBy */}
+        <div className="">
+          <h1>SortBy</h1>
+          <div className="flex gap-6">
+            <Multiselect
+              displayValue="title"
+              onSelect={e => {
+                setSortBy(e);
+              }}
+              options={sortByList}
+            />
+          </div>
+        </div>
+
         {/* buttons */}
         <div className="flex gap-4 pt-4">
           <button
             className="border border-gray-300 text-gray-600 px-4 py-2 rounded-md"
             onClick={() => {
-              // clear all filters
-              // setSources([]);
-              // setCategories([]);
-              // setLanguages([]);
-              // setCountries([]);
-
-              // close modal
               setShowModal(false);
             }}
           >
@@ -277,48 +304,12 @@ const Modal = ({
           </button>
           <button
             className="border border-blue-500 text-blue-500 px-4 py-2 rounded-md"
-            onClick={() => {
-              // TODO: save to db
-              console.log(sources, categories, languages, countries);
-
-              const filters = () => {
-                let filter = ``;
-
-                if (sources.length > 0) {
-                  filter += `&domains=${sources.join(",")}`;
-                }
-
-                if (categories.length > 0) {
-                  filter += `&category=${categories.join(",")}`;
-                }
-
-                if (languages.length > 0) {
-                  filter += `&language=${languages.join(",")}`;
-                }
-
-                if (countries.length > 0) {
-                  filter += `&country=${countries.join(",")}`;
-                }
-
-                return filter;
-              };
-
-              // filter news
-              dispatch(
-                filterNews({
-                  query,
-                  filter: filters(),
-                })
-              );
-
-              // close modal
-              setShowModal(false);
-            }}
+            onClick={handleSubmit}
           >
             Apply
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

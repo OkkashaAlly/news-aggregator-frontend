@@ -44,13 +44,18 @@ export const searchNews = createAsyncThunk(
 export const filterNews = createAsyncThunk(
   "news/filterNews",
   async (search: { query: string; filter: string }) => {
-    console.log("filters: ", search.filter);
+    try {
+      console.log("filters: ", search.filter);
 
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_NEWS_API_URL}everything?q=${search.query}${search.filter}&apiKey=${process.env.NEXT_PUBLIC_NEWS_API_KEY}`
-    );
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_NEWS_API_URL}everything?q=${search.query}&${search.filter}&apiKey=${process.env.NEXT_PUBLIC_NEWS_API_KEY}`
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error: any) {
+      console.log(error.response.data.message);
+      throw new Error(error.response.data.message);
+    }
   }
 );
 
