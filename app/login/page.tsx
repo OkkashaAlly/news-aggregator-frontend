@@ -44,7 +44,7 @@ export default function Login() {
 
   // RETURN ==========================================
   return (
-    <main className="container w-[75%] py-4 flex justify-center">
+    <main className="container w-[90%] md:w-[75%] py-4 flex justify-center">
       <div className="w-[40%] mt-8">
         <h1 className="text-3xl font-bold mb-4 text-center">Welcome Back</h1>
         {loading ? (
@@ -55,7 +55,9 @@ export default function Login() {
             className="bg-white p-6 rounded-md"
           >
             {error ? (
-              <h1 className="text-2xl text-red-500 text-center mb-4">{error}</h1>
+              <h1 className="text-2xl text-red-500 text-center mb-4">
+                {error}
+              </h1>
             ) : (
               loggedIn && (
                 <h1 className="text-2xl text-green-500 text-center mb-4">

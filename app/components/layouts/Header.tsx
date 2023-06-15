@@ -23,11 +23,11 @@ export default function Header() {
   // RETURN ==========================================
   return (
     <header className="border-b border-b-gray-300 shadow-sm bg-white py-3">
-      <div className="container w-[75%] flex items-center justify-between">
+      <div className="container w-[90%] md:w-[75%] flex flex-col md:flex-row items-center justify-between gap-3">
         <div className="flex gap-4 items-center">
           {/* logo */}
           <Link href="/" className="text-2xl font-bold">
-            News App
+            News
           </Link>
           {/* search bar  */}
           <SearchBar />

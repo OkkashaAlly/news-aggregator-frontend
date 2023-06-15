@@ -122,7 +122,7 @@ const Modal = ({ setShowModal }: { setShowModal: (arg0: boolean) => void }) => {
 
   // RETURN ==========================================
   return (
-    <div className="absolute shadow-lg top-8 left-4">
+    <div className="absolute shadow-lg top-8 left-0 md:left-4">
       <form className="bg-white space-y-4 p-6 rounded">
         {/* sources */}
         <div className="">

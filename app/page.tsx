@@ -12,7 +12,7 @@ import { Filter } from "./components";
 export default function Home() {
   // RETURN ==========================================
   return (
-    <main className="container w-[75%] py-4">
+    <main className="container w-[90%] md:w-[75%] py-4">
       {/* filters */}
       <div className="">
         <Filter />
@@ -33,15 +33,15 @@ const NewsSection = () => {
       <div className="container mx-auto">
         <div className="flex flex-wrap -m-4">
           {loading ? (
-            <h1>Loading...</h1>
+            <h1 className="p-4">Loading...</h1>
           ) : error ? (
-            <h1>{error}</h1>
+            <h1 className="p-4">{error}</h1>
           ) : news && news.articles.length > 0 ? (
             news.articles
               .slice(0, 6)
               .map(article => <NewsCard key={article.url} data={article} />)
           ) : (
-            <h1>No news found</h1>
+            <h1 className="p-4">No news found</h1>
           )}
         </div>
       </div>
@@ -50,7 +50,6 @@ const NewsSection = () => {
 };
 
 const NewsCard = ({ data }: { data: any }) => {
-  
   return (
     <div className="p-4 md:w-1/3 ">
       <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden ">
