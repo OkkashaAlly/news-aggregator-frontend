@@ -3,8 +3,9 @@ import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 // REDUX =============================================
-import { loginUser } from "@/store/features/user/authSlice";
+import { clearError, loginUser } from "@/store/features/user/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useEffect } from "react";
 
 // ===================================================
 // LOGIN PAGE COMPONENT (app/page.tsx) ===============
@@ -12,11 +13,15 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 export default function Login() {
   const router = useRouter();
 
+  // clear state error on page load
+  useEffect(() => {
+    dispatch(clearError());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // redux
   const dispatch = useAppDispatch();
-  const { loading, error, loggedIn } = useAppSelector(
-    state => state.auth
-  );
+  const { loading, error, loggedIn } = useAppSelector(state => state.auth);
 
   // form
   const {
@@ -34,25 +39,30 @@ export default function Login() {
     event?.target.reset();
 
     // redirect to home
-    if (loggedIn) router.push("/");
+    if (!error) router.push("/");
   };
 
   // RETURN ==========================================
   return (
     <main className="container w-[75%] py-4 flex justify-center">
-      <div className="w-[40%]">
+      <div className="w-[40%] mt-8">
         <h1 className="text-3xl font-bold mb-4 text-center">Welcome Back</h1>
         {loading ? (
           <h1>Loading...</h1>
-        ) : error ? (
-          <h1>{error}</h1>
-        ) : loggedIn ? (
-          <h1>LoggedIn successfully</h1>
         ) : (
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="bg-white p-6 rounded-md"
           >
+            {error ? (
+              <h1 className="text-2xl text-red-500 text-center mb-4">{error}</h1>
+            ) : (
+              loggedIn && (
+                <h1 className="text-2xl text-green-500 text-center mb-4">
+                  Logged in successfully
+                </h1>
+              )
+            )}
             {/* email */}
             <div className="mb-4">
               <label htmlFor="email" className="block text-gray-600 mb-2">

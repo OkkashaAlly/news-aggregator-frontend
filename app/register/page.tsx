@@ -1,7 +1,8 @@
 "use client";
-import { registerUser } from "@/store/features/user/authSlice";
+import { clearError, registerUser } from "@/store/features/user/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 // COMPONENTS ========================================
@@ -11,12 +12,16 @@ import { SubmitHandler, useForm } from "react-hook-form";
 // ===================================================
 export default function Register() {
   const router = useRouter();
-  
+
+  // clear state error on page load
+  useEffect(() => {
+    dispatch(clearError());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // redux
   const dispatch = useAppDispatch();
-  const { loading, error, registered } = useAppSelector(
-    state => state.auth
-  );
+  const { loading, error, registered } = useAppSelector(state => state.auth);
 
   // form
   const {
@@ -34,25 +39,32 @@ export default function Register() {
     event?.target.reset();
 
     // redirect to home
-    if (registered) router.push("/");
+    if (!error) router.push("/login");
   };
 
   // RETURN ==========================================
   return (
     <main className="container w-[75%] py-4 flex justify-center">
-      <div className="w-[40%]">
+      <div className="w-[40%] mt-8">
         <h1 className="text-3xl font-bold mb-4 text-center">Create account</h1>
         {loading ? (
           <h1>Loading...</h1>
-        ) : error ? (
-          <h1>{error}</h1>
-        ) : registered ? (
-          <h1>Registered successfully</h1>
         ) : (
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="bg-white p-6 rounded-md"
           >
+            {error ? (
+              <h1 className="text-2xl text-red-500 text-center mb-4">
+                {error}
+              </h1>
+            ) : (
+              registered && (
+                <h1 className="text-2xl text-green-500 text-center mb-4">
+                  Registered successfully
+                </h1>
+              )
+            )}
             {/* name */}
             <div className="mb-4">
               <label htmlFor="name" className="block text-gray-600 mb-2">

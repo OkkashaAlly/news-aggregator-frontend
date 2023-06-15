@@ -1,15 +1,24 @@
 "use client";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Link from "next/link";
-import { useAppSelector } from "@/store/hooks";
 
 // COMPONENTS =========================================
+import { logoutUser } from "@/store/features/user/authSlice";
 import { SearchBar } from "..";
 
 // ===================================================
 // HEADER LAYOUT COMPONENT (app/page.tsx) ============
 // ===================================================
 export default function Header() {
-  const { user } = useAppSelector(state => state.auth);
+  const dispatch = useAppDispatch();
+  const { loggedIn, user, loading, error } = useAppSelector(
+    state => state.auth
+  );
+
+  // handle logout
+  const handleLogOut = () => {
+    dispatch(logoutUser());
+  };
 
   // RETURN ==========================================
   return (
@@ -23,11 +32,14 @@ export default function Header() {
           {/* search bar  */}
           <SearchBar />
         </div>
-        {user ? (
+        {loggedIn && user ? (
           <div className="flex gap-4 items-center">
             <p className="capitalize">{user.name}</p>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
-              Logout
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              onClick={handleLogOut}
+            >
+              {loading ? "Loading..." : error ? error : "Logout"}
             </button>
           </div>
         ) : (

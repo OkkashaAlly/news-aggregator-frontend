@@ -16,6 +16,7 @@ const SearchBar = () => {
   // load initial news on page load
   useEffect(() => {
     dispatch(searchNews(query));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // handle search

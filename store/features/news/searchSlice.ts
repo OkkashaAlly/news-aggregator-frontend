@@ -27,11 +27,16 @@ const initialState: SearchState = {
 export const searchNews = createAsyncThunk(
   "news/searchNews",
   async (search: string) => {
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_NEWS_API_URL}everything?q=${search}&apiKey=${process.env.NEXT_PUBLIC_NEWS_API_KEY}`
-    );
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_NEWS_API_URL}everything?q=${search}&pageSize=10&apiKey=${process.env.NEXT_PUBLIC_NEWS_API_KEY}`
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error: any) {
+      console.log(error.response.data.message);
+      throw new Error(error.response.data.message);
+    }
   }
 );
 
