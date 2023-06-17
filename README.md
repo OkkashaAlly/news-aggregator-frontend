@@ -23,7 +23,7 @@ easy-to-read format
 ```
  cp .env.example .env or copy .env.example .env
 ```
-4. Build docker image
+4. Build docker image (make sure you have docker installed in your system)
 ```bash
   docker build -t news-aggregator-frontend .
 ```
