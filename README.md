@@ -19,19 +19,18 @@ easy-to-read format
 ```bash
   cd news-aggregator-frontend
 ``` 
-3. Install dependencies (yarn or npm)
-```
- yarn install
-```
-```
- npm install
-```
-
-4. Copy the Enviroment variables from env.example and create a new .env file paste
+3. Copy the Enviroment variables from env.example and create a new .env file paste
 ```
  cp .env.example .env or copy .env.example .env
 ```
+4. Build docker image
+```bash
+  docker build -t news-aggregator-frontend .
+```
 
-5. Run ``` yarn dev ``` or ``` npm run dev ```
+5. Run docker container
+```bash
+  docker run -dp 3000:3000 news-aggregator-frontend
+```
 
 6. Open url ``` http://localhost:3000/ ``` on your browser
